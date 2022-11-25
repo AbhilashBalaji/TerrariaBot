@@ -19,6 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="OTAPI" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="TerrariaBot\TerrariaBot.csproj" />
   </ItemGroup>
 </Project>
