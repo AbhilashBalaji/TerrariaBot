@@ -1,0 +1,120 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "Facepunch.Steamworks/2.3.3": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Facepunch.Steamworks.Win64.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Facepunch.Steamworks.Win64.dll": {
+            "related": ".xml"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Facepunch.Steamworks/2.3.3": {
+      "sha512": "7nUjWX/uy6JbDX7Q3n8ij7vrpWjTM0S8hXO24R3ZwQ0QgY0sXVlxzh3unmYoLvKGi31rzDHqGX68I169hnHNxQ==",
+      "type": "package",
+      "path": "facepunch.steamworks/2.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Facepunch.Steamworks.jpg",
+        "content/steam_api64.dll",
+        "facepunch.steamworks.2.3.3.nupkg.sha512",
+        "facepunch.steamworks.nuspec",
+        "lib/net46/Facepunch.Steamworks.Win64.dll",
+        "lib/net46/Facepunch.Steamworks.Win64.xml",
+        "lib/netstandard2.0/Facepunch.Steamworks.Win64.dll",
+        "lib/netstandard2.0/Facepunch.Steamworks.Win64.xml"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETCoreApp,Version=v3.1": [
+      "Facepunch.Steamworks >= 2.3.3"
+    ]
+  },
+  "packageFolders": {
+    "/Users/abalaji/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/Users/abalaji/repos/dsys/TerrariaBot/Meina/Meina.csproj",
+      "projectName": "Meina",
+      "projectPath": "/Users/abalaji/repos/dsys/TerrariaBot/Meina/Meina.csproj",
+      "packagesPath": "/Users/abalaji/.nuget/packages/",
+      "outputPath": "/Users/abalaji/repos/dsys/TerrariaBot/Meina/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/Users/abalaji/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "netcoreapp3.1"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "netcoreapp3.1": {
+        "targetAlias": "netcoreapp3.1",
+        "dependencies": {
+          "Facepunch.Steamworks": {
+            "target": "Package",
+            "version": "[2.3.3, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[3.1.10, 3.1.10]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.osx-x64",
+            "version": "[3.1.31, 3.1.31]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[3.1.0, 3.1.0]"
+          }
+        ],
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.100/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
