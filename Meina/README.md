@@ -7,7 +7,7 @@ Repo contains two projects , slightly modified to work
 this is a visual studio project and should be able to load up directly by importing the Menia.sln file (should change xd)
 
 
-#DEPRICATED 
+# DEPRICATED 
 # Meina
 A bot that can play at Terraria
 
