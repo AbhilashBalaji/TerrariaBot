@@ -26,29 +26,18 @@ namespace Meina
             {
                 Console.WriteLine("Enter your connection method:");
                 Console.WriteLine("1. IP");
-                Console.WriteLine("2. Steam");
+                //Console.WriteLine("2. Steam");
                 char choice;
                 do
                 {
                     choice = Console.ReadKey().KeyChar;
                 } while (choice != '1' && choice != '2');
                 string ip;
-                if (choice == '1')
-                {
                     client = new IPClient();
                     Console.Clear();
                     Console.WriteLine("Enter IP address (localhost):");
                     ip = Console.ReadLine();
                     if (ip == "") ip = "localhost";
-                }
-                else
-                {
-                    //client = new SteamClient();
-                    //Console.Clear();
-                    //Console.WriteLine("Enter Steam ID to join:");
-                    //ip = Console.ReadLine();
-                    return;
-                }
                 client.ServerJoined += Ai;
                 client.Log += Log;
                 client.ChatMessageReceived += Chat;
@@ -60,10 +49,7 @@ namespace Meina
                 {
                     ((IPClient)client).ConnectWithIP(ip, myInfos, password);
                 }
-                //else
-                //{
-                //    ((SteamClient)client).ConnectWithSteamId(ulong.Parse(ip), myInfos, password);
-                //}
+
             }
             catch (SocketException se)
             {

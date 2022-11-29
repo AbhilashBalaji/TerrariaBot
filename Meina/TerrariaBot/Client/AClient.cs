@@ -318,8 +318,12 @@ namespace TerrariaBot.Client
 
                     case NetworkRequest.PlayerControls:
                         {
+                            /*
+                             *  Ref : https://github.com/MikeyIsBaeYT/Terraria-Source-Code/blob/19f866ab25d83d6d3972717dd1edde4a736cf5af/NetMessage.cs#LL316C7-L316C18
+                             *  
+                             */
                             byte slot = reader.ReadByte();
-                            byte movement = reader.ReadByte();
+                            byte movement = reader.ReadByte(); //14
                             bool up = ByteToBool(movement, 1);
                             bool down = ByteToBool(movement, 2);
                             bool left = ByteToBool(movement, 4);
@@ -328,8 +332,10 @@ namespace TerrariaBot.Client
                             bool useItem = ByteToBool(movement, 32);
                             bool direction = ByteToBool(movement, 64);
                             string keyInfo = "Key pressed: " + (up ? "Up " : "") + (down ? ", Down " : "") + (left + ", Left " + "") + (right + ", Right " + "") + (jump + ", Jump " + "");
-                            byte otherMovement = reader.ReadByte();
-                            byte selectedItem = reader.ReadByte();
+                            byte otherMovement = reader.ReadByte(); //15
+                            byte selectedItem = reader.ReadByte(); //16
+                            byte isSleeping = reader.ReadByte(); //17
+c                            byte selectedItem1 = reader.ReadByte();
                             float posX = reader.ReadSingle();
                             float posY = reader.ReadSingle();
                             var player = _otherPlayers[slot];
@@ -422,6 +428,10 @@ namespace TerrariaBot.Client
                     case NetworkRequest.ItemInfo:
                     case NetworkRequest.ItemOwnerInfo:
                     case NetworkRequest.NPCInfo:
+                        {
+                            
+                        }
+                        break;
                     case NetworkRequest.UpdateProjectile:
                     case NetworkRequest.DeleteProjectile:
                     case NetworkRequest.EvilRatio:
