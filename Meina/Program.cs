@@ -77,6 +77,9 @@ namespace Meina
         public void Start()
         {
             autoEvent.WaitOne();
+            var me = client.GetPlayerSelf();
+            me.DoAction(PlayerAction.Left);
+
         }
 
         private void Chat(Player author, string message)
