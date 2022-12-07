@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/abalaji/repos/dsys/TerrariaBot/Meina/Meina.csproj": {}
+    "C:\\Users\\Sven\\Documents\\uni\\TerrariaBot\\Meina\\Meina.csproj": {}
   },
   "projects": {
-    "/Users/abalaji/repos/dsys/TerrariaBot/Meina/Meina.csproj": {
+    "C:\\Users\\Sven\\Documents\\uni\\TerrariaBot\\Meina\\Meina.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/abalaji/repos/dsys/TerrariaBot/Meina/Meina.csproj",
+        "projectUniqueName": "C:\\Users\\Sven\\Documents\\uni\\TerrariaBot\\Meina\\Meina.csproj",
         "projectName": "Meina",
-        "projectPath": "/Users/abalaji/repos/dsys/TerrariaBot/Meina/Meina.csproj",
-        "packagesPath": "/Users/abalaji/.nuget/packages/",
-        "outputPath": "/Users/abalaji/repos/dsys/TerrariaBot/Meina/obj/",
+        "projectPath": "C:\\Users\\Sven\\Documents\\uni\\TerrariaBot\\Meina\\Meina.csproj",
+        "packagesPath": "C:\\Users\\Sven\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Sven\\Documents\\uni\\TerrariaBot\\Meina\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/abalaji/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Sven\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -54,26 +56,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.10, 3.1.10]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.osx-x64",
-              "version": "[3.1.31, 3.1.31]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[3.1.0, 3.1.0]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.100/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }
