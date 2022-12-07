@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using TerrariaBot;
-//using TerrariaBot;
 using TerrariaBot.Client;
 using TerrariaBot.Entity;
 //using TerrariaBot.Steam.Client;
