@@ -183,30 +183,32 @@ namespace TerrariaBot.Client
                     case NetworkRequest.TileData: // Some information about a row of tile?
                         {
                             MemoryStream stream = new MemoryStream();
-                            if (payload.ReadByte() != 0)
-                            {
+                            //if (payload.ReadByte() != 0)
+                            //{
                                 using (DeflateStream deflate = new DeflateStream(payload, CompressionMode.Decompress))
                                 {
                                     deflate.CopyTo(stream);
                                     deflate.Close();
                                 }
                                 stream.Position = 0L;
-                            }
-                            else
-                            {
-                                stream = payload;
-                                stream.Position = 1L;
-                            }
+                        
+                            //if (payload.ReadByte() == 0)
+                            //{
+                            //    stream = payload;
+                            //    stream.Position = 1L;
+                            //}
                             using (BinaryReader r = new BinaryReader(stream))
                             {
-                                int xStart = r.ReadInt32();
-                                int yStart = r.ReadInt32();
                                 int width = r.ReadInt16();
+                                int xStart = r.ReadInt32();
+                                //int yStart = r.ReadInt32();
+                                int yStart = 0;
                                 int height = r.ReadInt16();
-                                LogDebug("Updating " + width + " x " + height + " tiles beginning at (" + xStart + ";" + yStart + ")");
+                                LogDebug("Updating " + width + " x "  + " tiles beginning at (" + xStart + ";" + yStart + ")");
                                 // I have no idea what I'm doing but it's what Terraria is doing
                                 Tile tile = null;
                                 int value = 0;
+                                //return;
                                 for (int y = yStart; y < yStart + height; y++)
                                 {
                                     for (int x = xStart; x < xStart + width; x++)

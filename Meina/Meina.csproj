@@ -13,6 +13,9 @@
 
 
   <ItemGroup>
+    <None Remove="OTAPI" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="TerrariaBot\TerrariaBot.csproj" />
     <None Include="Program.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
   </ItemGroup>

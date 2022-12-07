@@ -13,7 +13,7 @@ namespace Meina
     {
         private AClient client;
         private readonly AutoResetEvent autoEvent = new AutoResetEvent(false);
-        private readonly PlayerInformation myInfos = new PlayerInformation("Meina", 11, new Color(255, 248, 220), new Color(245, 245, 220), new Color(0, 0, 255),
+        private readonly PlayerInformation myInfos = new PlayerInformation("Meina1", 11, new Color(255, 248, 220), new Color(245, 245, 220), new Color(0, 0, 255),
             new Color(255, 0, 0), new Color(127, 0, 0), new Color(255, 248, 220), new Color(0, 0, 0), PlayerDifficulty.Easy);
         private Random rand = new Random();
         static void Main(string[] _)
