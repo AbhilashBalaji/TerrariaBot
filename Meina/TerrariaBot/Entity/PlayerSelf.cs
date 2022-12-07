@@ -7,12 +7,14 @@ namespace TerrariaBot.Entity
 {
     public class PlayerSelf : Player
     {
+        public string Name;
         public PlayerSelf(AClient client, string name, byte slot) : base(client, name, slot)
         {
             _lastActions = 0;
+            Name = name;
             new Thread(new ThreadStart(UpdatePosition)).Start();
         }
-
+        
         /// <summary>
         /// On the long term it's hard to calculate where the player will land exactly
         /// So we update the player position every 2 secondes if he is moving
@@ -28,7 +30,7 @@ namespace TerrariaBot.Entity
                 }
             }
         }
-
+        
         public void DoAction(params PlayerAction[] actions)
         {
             float xVel = 0f;

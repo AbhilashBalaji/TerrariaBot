@@ -14,9 +14,9 @@ namespace TerrariaBot.Client
             _client.Close();
         }
 
-        public void ConnectWithIP(string ip, PlayerInformation playerInfos, string serverPassword = "")
+        public void ConnectWithIP(string ip, PlayerInformation playerInfos, string serverPassword = "",int port =7777)
         {
-            _client = new TcpClient(ip, 7777);
+            _client = new TcpClient(ip, port);
             _ns = _client.GetStream();
             InitPlayerInfos(playerInfos, serverPassword);
         }

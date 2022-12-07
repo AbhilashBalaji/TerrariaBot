@@ -9,16 +9,13 @@
     <PackageReference Include="Facepunch.Steamworks" Version="2.3.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Steamworks.NET">
-      <HintPath>..\Steamworks.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="TerrariaBot.Steam">
-      <HintPath>..\..\TerrariaBot\TerrariaBot.Steam\bin\Debug\netcoreapp3.1\TerrariaBot.Steam.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+
 
   <ItemGroup>
     <None Include="TerrariaBot\TerrariaBot.csproj" />
+    <None Include="Program.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Program.cs" />
   </ItemGroup>
 </Project>
