@@ -14,6 +14,22 @@
 /Users/abalaji/repos/Meina/Meina/obj/Debug/netcoreapp3.1/Meina.dll
 /Users/abalaji/repos/Meina/Meina/obj/Debug/netcoreapp3.1/Meina.pdb
 /Users/abalaji/repos/Meina/Meina/obj/Debug/netcoreapp3.1/Meina.genruntimeconfig.cache
+<<<<<<< HEAD
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\obj\Debug\netcoreapp3.1\Meina.csproj.AssemblyReference.cache
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\obj\Debug\netcoreapp3.1\Meina.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\obj\Debug\netcoreapp3.1\Meina.csproj.CoreCompileInputs.cache
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\obj\Debug\netcoreapp3.1\Meina.dll
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\obj\Debug\netcoreapp3.1\Meina.pdb
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\bin\Debug\netcoreapp3.1\Meina.exe
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\bin\Debug\netcoreapp3.1\Meina.deps.json
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\bin\Debug\netcoreapp3.1\Meina.runtimeconfig.json
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\bin\Debug\netcoreapp3.1\Meina.runtimeconfig.dev.json
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\bin\Debug\netcoreapp3.1\Meina.dll
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\bin\Debug\netcoreapp3.1\Meina.pdb
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\bin\Debug\netcoreapp3.1\Facepunch.Steamworks.Win64.dll
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\obj\Debug\netcoreapp3.1\Meina.csproj.CopyComplete
+C:\Users\Sven\Documents\uni\TerrariaBot\Meina\obj\Debug\netcoreapp3.1\Meina.genruntimeconfig.cache
+=======
 /Users/abalaji/repos/dsys/TerrariaBot/Meina/bin/Debug/netcoreapp3.1/Meina
 /Users/abalaji/repos/dsys/TerrariaBot/Meina/bin/Debug/netcoreapp3.1/Meina.deps.json
 /Users/abalaji/repos/dsys/TerrariaBot/Meina/bin/Debug/netcoreapp3.1/Meina.runtimeconfig.json
@@ -30,3 +46,4 @@
 /Users/abalaji/repos/dsys/TerrariaBot/Meina/obj/Debug/netcoreapp3.1/Meina.dll
 /Users/abalaji/repos/dsys/TerrariaBot/Meina/obj/Debug/netcoreapp3.1/Meina.pdb
 /Users/abalaji/repos/dsys/TerrariaBot/Meina/obj/Debug/netcoreapp3.1/Meina.genruntimeconfig.cache
+>>>>>>> main

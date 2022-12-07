@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using TerrariaBot;
-//using TerrariaBot;
 using TerrariaBot.Client;
 using TerrariaBot.Entity;
 //using TerrariaBot.Steam.Client;
@@ -77,6 +76,9 @@ namespace Meina
         public void Start()
         {
             autoEvent.WaitOne();
+            var me = client.GetPlayerSelf();
+            me.DoAction(PlayerAction.Left);
+
         }
 
         private void Chat(Player author, string message)

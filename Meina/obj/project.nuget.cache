@@ -1,13 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "PW5F9DHHMnsTLYabRVJw8fbrko2kEvyAq18NAr7CT7MlbqLlwKTpD7wysd9EutUpSp9GgPrCGRaCMY4JoKz7wg==",
+  "dgSpecHash": "7CjEJgiWkW/beYpk1a97XPOC1v7Aa4wwGzIAfGAhGPNPu0UPfmjykTXEKR2/MPfj0lknkRRUiX6aRDlvtcCuXw==",
   "success": true,
-  "projectFilePath": "/Users/abalaji/repos/dsys/TerrariaBot/Meina/Meina.csproj",
+  "projectFilePath": "C:\\Users\\Sven\\Documents\\uni\\TerrariaBot\\Meina\\Meina.csproj",
   "expectedPackageFiles": [
-    "/Users/abalaji/.nuget/packages/facepunch.steamworks/2.3.3/facepunch.steamworks.2.3.3.nupkg.sha512",
-    "/Users/abalaji/.nuget/packages/microsoft.aspnetcore.app.ref/3.1.10/microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
-    "/Users/abalaji/.nuget/packages/microsoft.netcore.app.host.osx-x64/3.1.31/microsoft.netcore.app.host.osx-x64.3.1.31.nupkg.sha512",
-    "/Users/abalaji/.nuget/packages/microsoft.netcore.app.ref/3.1.0/microsoft.netcore.app.ref.3.1.0.nupkg.sha512"
+    "C:\\Users\\Sven\\.nuget\\packages\\facepunch.steamworks\\2.3.3\\facepunch.steamworks.2.3.3.nupkg.sha512"
   ],
   "logs": []
 }

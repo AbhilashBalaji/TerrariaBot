@@ -654,6 +654,6 @@ namespace TerrariaBot.Client
 
         private Thread _listenThread;
 
-        private const string version = "Terraria275";
+        private const string version = "Terraria194";
     }
 }
