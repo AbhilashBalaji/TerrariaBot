@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>  
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,9 +12,6 @@
 
 
 
-  <ItemGroup>
-    <None Remove="OTAPI" />
-  </ItemGroup>
   <ItemGroup>
     <None Include="TerrariaBot\TerrariaBot.csproj" />
     <None Include="Program.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
