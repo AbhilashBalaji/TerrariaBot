@@ -398,3 +398,9 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 .DS_Store
+
+Meina/TerrariaBot/.DS_Store
+Meina/TerrariaBot/TerrariaBot.csproj
+Meina/TerrariaBot/obj/
+Meina/TerrariaBot/properties/
+Meina/TerrariaBot/bin/
