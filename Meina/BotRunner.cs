@@ -74,19 +74,19 @@ namespace Meina
             bot.SendChatMessage("STARTING RANDOM ACTION");
 
 
-            for (int i = 0; i < 300; i++)
+           while(true)
             {
-                // var randAction = rand.Next(BotActions.Length);
-                // bot.DoAction(BotActions[randAction]);
                 System.Numerics.Vector2 vector = bot.GetPosition();
-                bot.Teleport(vector.X-12.4f, vector.Y-12.4f);
+                float xPos = vector.X;
+                float yPos = vector.Y;
+
+                float deltaX = ((float)rand.NextDouble()) * 200;
+                float newXPos = (rand.NextDouble() >= 0.5) ? xPos + deltaX : xPos - deltaX;
+
+                bot.Teleport(newXPos, 5200);
                 System.Threading.Thread.Sleep(rand.Next(1, 4000));
-                bot.SendChatMessage("End NEW");
-                bot.SendChatMessage(bot.GetPosition().ToString());
             }
 
-            bot.SendChatMessage("ENDING RANDOM ACTION");
-            bot.DoAction();
         }
 
         private void Log(LogLevel logLevel, string message)
