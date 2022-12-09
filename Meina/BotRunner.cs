@@ -11,7 +11,7 @@ namespace Meina
 {
     public class BotRunner
     {
-        readonly private int N = 5;
+        readonly private int N = 1;
         readonly int seed = 12345;
         private string ip = "localhost";
         private string password = "";
@@ -23,7 +23,7 @@ namespace Meina
         => new BotRunner();
 
 
-        private PlayerAction[] BotActions = new []{ PlayerAction.Left,PlayerAction.Right };
+        private PlayerAction[] BotActions = new []{ PlayerAction.Left, PlayerAction.Right };
 
         public BotRunner()
 		{
@@ -63,17 +63,28 @@ namespace Meina
         private void BotJoined(PlayerSelf bot)
         {
             bot.SendChatMessage(bot.GetName() + " Joined");
+            // System.Numerics.Vector2 vector = new System.Numerics.Vector2(0, 0);
+            // System.Numerics.Vector2 velo = new System.Numerics.Vector2(0, 0);
+
+            // bot.SetPosition(vector, velo);
             //random sleep before action
             System.Threading.Thread.Sleep(rand.Next(1,40));
             bot.JoinTeam(Team.Red);
             bot.TogglePVP(false);
             bot.SendChatMessage("STARTING RANDOM ACTION");
 
-            var randAction = rand.Next(BotActions.Length);
-            bot.DoAction(BotActions[randAction]);
-            System.Threading.Thread.Sleep(rand.Next(1, 4000));
-            randAction = rand.Next(BotActions.Length);
-            bot.DoAction(BotActions[randAction]);
+
+            for (int i = 0; i < 300; i++)
+            {
+                // var randAction = rand.Next(BotActions.Length);
+                // bot.DoAction(BotActions[randAction]);
+                System.Numerics.Vector2 vector = bot.GetPosition();
+                bot.Teleport(vector.X-12.4f, vector.Y-12.4f);
+                System.Threading.Thread.Sleep(rand.Next(1, 4000));
+                bot.SendChatMessage("End NEW");
+                bot.SendChatMessage(bot.GetPosition().ToString());
+            }
+
             bot.SendChatMessage("ENDING RANDOM ACTION");
             bot.DoAction();
         }
