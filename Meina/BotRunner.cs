@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
@@ -11,13 +12,16 @@ namespace Meina
 {
     public class BotRunner
     {
-        readonly private int N = 50;
+        readonly private int N = 0;
         readonly int seed = 12345;
         private string ip = "localhost";
         private string password = "";
         private readonly AutoResetEvent autoEvent = new AutoResetEvent(false);
         private Random rand = new Random();
         private AClient Client;
+        private Stopwatch Stopwatch = new Stopwatch();
+        private bool waitingForReceive = false;
+        long nanosecPerTick = (1000L * 1000L * 1000L) / Stopwatch.Frequency;
         static void Main(string[] _)
         => new BotRunner();
 
@@ -30,27 +34,28 @@ namespace Meina
             {
 
                 rand = new Random(Seed: seed);
-              
-                Client = new IPClient();
-                var name = "Sender";
-                var newChar = GenerateRandomChar(name);
-                Client.ServerJoined += BotJoined;
-                Client.Log += Log;
-                Client.ChatMessageReceived += Chat;
-                ((IPClient)Client).ConnectWithIP(ip, newChar, password);
-                Console.WriteLine("Sender connected");
 
-                Client = new IPClient();
-                var name2 = "Reveiver";
-                var newChar2 = GenerateRandomChar(name);
-                Client.ServerJoined += BotJoined;
-                Client.Log += Log;
-                Client.ChatMessageReceived += Chat;
-                ((IPClient)Client).ConnectWithIP(ip, newChar, password);
-                Console.WriteLine("Sender connected");
+                for (int i = 0; i < N + 2; ++i)
 
+                {
+                    Client = new IPClient();
+                    var name = i == 0 ? "Receiver" : (i == 1 ? "Sender" : "Bot" + (i - 2).ToString());
+                    var newChar = GenerateRandomChar(name);
+                    Client.ServerJoined += BotJoined;
+                    Client.Log += Log;
+                    if (i == 0)
+                    {
+                        Client.ChatMessageReceived += ReceiverChat;
+                    }
+                    else
+                    {
+                        Client.ChatMessageReceived += Chat;
+                    }
+                    ((IPClient)Client).ConnectWithIP(ip, newChar, password);
+                    Console.WriteLine("CLIENT CONNECTED");
 
-                //Console.ReadLine();
+                }
+
             }
             catch (SocketException se)
             {
@@ -66,20 +71,23 @@ namespace Meina
 
         private void BotJoined(PlayerSelf bot)
         {
-            bot.SendChatMessage(bot.GetName() + " Joined");
-            //random sleep before action
-            System.Threading.Thread.Sleep(rand.Next(1,40));
-            bot.JoinTeam(Team.Red);
-            bot.TogglePVP(true);
-            bot.SendChatMessage("STARTING RANDOM ACTION");
+            if (String.Equals(bot.GetName(), "Sender"))
+            {
+                while (true)
+                {
+                    if (waitingForReceive == false)
+                    {
+                        Stopwatch.Reset();
+                        Stopwatch.Start();
+                        waitingForReceive = true;
+                        bot.SendChatMessage("Latency");
+                    }
+                }
+            }
+            else if (String.Equals(bot.GetName(), "Receiver"))
+            {
+            }
 
-            var randAction = rand.Next(BotActions.Length);
-            bot.DoAction(BotActions[randAction]);
-            System.Threading.Thread.Sleep(rand.Next(1, 4000));
-            randAction = rand.Next(BotActions.Length);
-            bot.DoAction(BotActions[randAction]);
-            bot.SendChatMessage("ENDING RANDOM ACTION");
-            bot.DoAction();
         }
 
         private void Log(LogLevel logLevel, string message)
@@ -107,10 +115,25 @@ namespace Meina
             Console.ForegroundColor = color;
         }
 
+        private void ReceiverChat(Player author, string message)
+        {
+            if (String.Equals(author.GetName(), "Sender"))
+            {
+                // Stop time
+                // log msg
+                Stopwatch.Stop();
+                long millis = Stopwatch.ElapsedMilliseconds;
+                long nanos = Stopwatch.ElapsedTicks * nanosecPerTick;
+                Console.WriteLine("Millis: {0}, Nanos: {1}", millis, nanos);
+                System.Threading.Thread.Sleep(50);
+                waitingForReceive = false;
+            }
+            
+        }
 
         private void Chat(Player author, string message)
         {
-            //var me = author.
+
             //if (message.ToLower().StartsWith("meina"))
             //{
             //    message = message.Substring(5).Trim().ToLower();
