@@ -11,11 +11,10 @@ namespace Meina
 {
     public class BotRunner
     {
-        readonly private int N = 5;
+        readonly private int N = 50;
         readonly int seed = 12345;
         private string ip = "localhost";
         private string password = "";
-        private AClient client;
         private readonly AutoResetEvent autoEvent = new AutoResetEvent(false);
         private Random rand = new Random();
         private AClient Client;
@@ -31,20 +30,25 @@ namespace Meina
             {
 
                 rand = new Random(Seed: seed);
-                for (int i = 0; i < N; ++i)
+              
+                Client = new IPClient();
+                var name = "Sender";
+                var newChar = GenerateRandomChar(name);
+                Client.ServerJoined += BotJoined;
+                Client.Log += Log;
+                Client.ChatMessageReceived += Chat;
+                ((IPClient)Client).ConnectWithIP(ip, newChar, password);
+                Console.WriteLine("Sender connected");
 
-                {
-                    Client = new IPClient();
-                    var name = "Bot#" + i.ToString();
-                    var newChar = GenerateRandomChar(name);
-                    Client.ServerJoined += BotJoined;
-                    Client.Log += Log;
-                    Client.ChatMessageReceived += Chat;
-                    ((IPClient)Client).ConnectWithIP(ip, newChar, password);
-                    Console.WriteLine("CLIENT CONNECTED");
+                Client = new IPClient();
+                var name2 = "Reveiver";
+                var newChar2 = GenerateRandomChar(name);
+                Client.ServerJoined += BotJoined;
+                Client.Log += Log;
+                Client.ChatMessageReceived += Chat;
+                ((IPClient)Client).ConnectWithIP(ip, newChar, password);
+                Console.WriteLine("Sender connected");
 
-                    //Console.ReadLine();
-                }
 
                 //Console.ReadLine();
             }
@@ -66,7 +70,7 @@ namespace Meina
             //random sleep before action
             System.Threading.Thread.Sleep(rand.Next(1,40));
             bot.JoinTeam(Team.Red);
-            bot.TogglePVP(false);
+            bot.TogglePVP(true);
             bot.SendChatMessage("STARTING RANDOM ACTION");
 
             var randAction = rand.Next(BotActions.Length);
