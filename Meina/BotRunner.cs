@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading;
 using TerrariaBot;
 //using TerrariaBot;
@@ -14,9 +16,10 @@ namespace Meina
     public class BotRunner
     {
         // Configurable settings
-        readonly private int botCount = 10;
+        readonly private int botCount = 100;
         readonly private bool testLatency = true;
         readonly private string workload = "teleport";
+        string logFile = Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory) + "\\output.csv";
 
         readonly int seed = 12345;
         private string ip = "localhost";
@@ -37,8 +40,12 @@ namespace Meina
         {
             try
             {
-
                 rand = new Random(Seed: seed);
+                if (File.Exists(logFile)) File.Delete(logFile);
+                File.Create(logFile).Close();
+                TextWriter tw = new StreamWriter(logFile);
+                tw.WriteLine("PacketNumber,Latency,Botcount,Workload");
+                tw.Close();
 
                 if (testLatency) botCount += 2;
 
@@ -78,14 +85,11 @@ namespace Meina
 
         private void BotJoined(PlayerSelf bot)
         {
-            bot.SendChatMessage(bot.GetName() + " Joined");
 
-            System.Threading.Thread.Sleep(rand.Next(1, 40));
-            bot.JoinTeam(Team.Red);
             bot.TogglePVP(false);
-            bot.SendChatMessage("STARTING RANDOM ACTION");
             if (String.Equals(bot.GetName(), "Sender"))
             {
+                int packetNumber = 1;
                 while (true)
                 {
                     if (waitingForReceive == false)
@@ -93,7 +97,8 @@ namespace Meina
                         Stopwatch.Reset();
                         Stopwatch.Start();
                         waitingForReceive = true;
-                        bot.SendChatMessage("Latency");
+                        bot.SendChatMessage("Latency " + packetNumber.ToString());
+                        packetNumber++;
                     }
                 }
             }
@@ -117,7 +122,6 @@ namespace Meina
 
         private void runTeleportWorkload(PlayerSelf bot)
         {
-            bot.TogglePVP(false);
 
             while (true)
             {
@@ -176,16 +180,20 @@ namespace Meina
             if (String.Equals(author.GetName(), "Sender"))
             {
                 Stopwatch.Stop();
-                long millis = Stopwatch.ElapsedMilliseconds;
+                int packetNumber = int.Parse(message.Split(' ')[1]);
+                //long millis = Stopwatch.ElapsedMilliseconds;
                 long nanos = Stopwatch.ElapsedTicks * nanosecPerTick;
-                String logMessage = millis + "ms, " + nanos + "ns";
+                int botCount = Client.GetAllPlayers().Length;
+
+                string logMessage = $"{packetNumber},{nanos},{botCount},{workload}";
+
+                TextWriter tw = new StreamWriter(logFile, true);
+                tw.WriteLine(logMessage);
+                tw.Close();
+
                 //Console.WriteLine("{0}Ms, {1}Ns", millis, nanos);
                 //Console.WriteLine(logMessage);
-                Console.WriteLine(Client.GetAllPlayers());
-                LoggerController loggerController = new LoggerController();
-
-                loggerController.Log(logMessage);
-                System.Threading.Thread.Sleep(10);
+                System.Threading.Thread.Sleep(20);
                 waitingForReceive = false;
             }
         }
