@@ -12,7 +12,7 @@ namespace Meina
 {
     public class BotRunner
     {
-        readonly private int N = 0;
+        readonly private int N = 10;
         readonly int seed = 12345;
         private string ip = "localhost";
         private string password = "";
@@ -26,23 +26,23 @@ namespace Meina
         => new BotRunner();
 
 
-        private PlayerAction[] BotActions = new []{ PlayerAction.Left,PlayerAction.Right };
+        private PlayerAction[] BotActions = new[] { PlayerAction.Left, PlayerAction.Right };
 
         public BotRunner()
-		{
+        {
             try
             {
 
                 rand = new Random(Seed: seed);
 
                 for (int i = 0; i < N + 2; ++i)
-
                 {
                     Client = new IPClient();
                     var name = i == 0 ? "Receiver" : (i == 1 ? "Sender" : "Bot" + (i - 2).ToString());
                     var newChar = GenerateRandomChar(name);
                     Client.ServerJoined += BotJoined;
                     Client.Log += Log;
+
                     if (i == 0)
                     {
                         Client.ChatMessageReceived += ReceiverChat;
@@ -51,6 +51,7 @@ namespace Meina
                     {
                         Client.ChatMessageReceived += Chat;
                     }
+                    
                     ((IPClient)Client).ConnectWithIP(ip, newChar, password);
                     Console.WriteLine("CLIENT CONNECTED");
 
@@ -71,10 +72,25 @@ namespace Meina
 
         private void BotJoined(PlayerSelf bot)
         {
+            bot.SendChatMessage(bot.GetName() + " Joined");
+
+            System.Threading.Thread.Sleep(rand.Next(1, 40));
+            bot.JoinTeam(Team.Red);
+            bot.TogglePVP(false);
+            bot.SendChatMessage("STARTING RANDOM ACTION");
             if (String.Equals(bot.GetName(), "Sender"))
             {
                 while (true)
                 {
+                    System.Numerics.Vector2 vector = bot.GetPosition();
+                    float xPos = vector.X;
+                    float yPos = vector.Y;
+
+                    float deltaX = ((float)rand.NextDouble()) * 200;
+                    float newXPos = (rand.NextDouble() >= 0.5) ? xPos + deltaX : xPos - deltaX;
+
+                    bot.Teleport(newXPos, 5200);
+                    System.Threading.Thread.Sleep(rand.Next(1, 4000));
                     if (waitingForReceive == false)
                     {
                         Stopwatch.Reset();
@@ -124,11 +140,16 @@ namespace Meina
                 Stopwatch.Stop();
                 long millis = Stopwatch.ElapsedMilliseconds;
                 long nanos = Stopwatch.ElapsedTicks * nanosecPerTick;
-                Console.WriteLine("Millis: {0}, Nanos: {1}", millis, nanos);
+                String logMessage = millis + "ms, " + nanos + "ns";
+                //Console.WriteLine("{0}Ms, {1}Ns", millis, nanos);
+                //Console.WriteLine(logMessage);
+                Console.WriteLine(Client.GetAllPlayers());
+                LoggerController loggerController = new LoggerController();
+
+                loggerController.Log(logMessage);
                 System.Threading.Thread.Sleep(50);
                 waitingForReceive = false;
             }
-            
         }
 
         private void Chat(Player author, string message)
@@ -173,7 +194,7 @@ namespace Meina
             //    {
             //        SendSuccessMessage(me);
             //        me.DoAction();
-            //    }
+            //    }1
             //}
         }
 
@@ -184,7 +205,7 @@ namespace Meina
             bot.SendChatMessage("got it");
         }
 
-        private PlayerInformation GenerateRandomChar(string name,PlayerDifficulty difficulty = PlayerDifficulty.Easy)
+        private PlayerInformation GenerateRandomChar(string name, PlayerDifficulty difficulty = PlayerDifficulty.Easy)
         {
             int hair_i = rand.Next(HairList.Count());
             var hair = HairList[hair_i];
@@ -197,9 +218,9 @@ namespace Meina
             var shoesColor = new Color(BitConverter.GetBytes((rand.Next(0, 256)))[0], BitConverter.GetBytes((rand.Next(0, 256)))[0], BitConverter.GetBytes((rand.Next(0, 256)))[0]);
             PlayerInformation newChar = new PlayerInformation(name: name, hairVariant: hair, hairColor: hairColor,
                 skinColor: skinColor, eyesColor: eyesColor, shirtColor: shirtColor, underShirtColor: underShirtColor,
-                pantsColor: pantsColor, shoesColor: shoesColor,difficulty:difficulty);
+                pantsColor: pantsColor, shoesColor: shoesColor, difficulty: difficulty);
             return newChar;
         }
-	}
+    }
 }
 
