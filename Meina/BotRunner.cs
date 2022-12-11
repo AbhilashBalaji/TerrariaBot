@@ -12,7 +12,11 @@ namespace Meina
 {
     public class BotRunner
     {
-        readonly private int N = 0;
+        // Configurable settings
+        readonly private int botCount = 0;
+        readonly private bool testLatency = true;
+        readonly private string workload = "teleport";
+
         readonly int seed = 12345;
         private string ip = "localhost";
         private string password = "";
@@ -35,11 +39,17 @@ namespace Meina
 
                 rand = new Random(Seed: seed);
 
-                for (int i = 0; i < N + 2; ++i)
+                if (testLatency) botCount += 2;
 
+                for (int i = 0; i < botCount; ++i)
                 {
                     Client = new IPClient();
-                    var name = i == 0 ? "Receiver" : (i == 1 ? "Sender" : "Bot" + (i - 2).ToString());
+
+                    //Naming bots
+                    var name = "";
+                    if (testLatency) name = i == 0 ? "Receiver" : (i == 1 ? "Sender" : "Bot" + (i - 2).ToString());
+                    else name = "Bot" + (i).ToString();
+
                     var newChar = GenerateRandomChar(name);
                     Client.ServerJoined += BotJoined;
                     Client.Log += Log;
@@ -86,6 +96,11 @@ namespace Meina
             }
             else if (String.Equals(bot.GetName(), "Receiver"))
             {
+                //avoid receiver doing workload actions
+            }
+            else
+            {
+                //workload bots
             }
 
         }
@@ -119,8 +134,6 @@ namespace Meina
         {
             if (String.Equals(author.GetName(), "Sender"))
             {
-                // Stop time
-                // log msg
                 Stopwatch.Stop();
                 long millis = Stopwatch.ElapsedMilliseconds;
                 long nanos = Stopwatch.ElapsedTicks * nanosecPerTick;
