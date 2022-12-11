@@ -55,14 +55,8 @@ namespace Meina
                     Client.ServerJoined += BotJoined;
                     Client.Log += Log;
 
-                    if (i == 0)
-                    {
-                        Client.ChatMessageReceived += ReceiverChat;
-                    }
-                    else
-                    {
-                        Client.ChatMessageReceived += Chat;
-                    }
+                    if (i == 0) Client.ChatMessageReceived += ReceiverChat;
+                    else Client.ChatMessageReceived += Chat;
                     
                     ((IPClient)Client).ConnectWithIP(ip, newChar, password);
                     Console.WriteLine("CLIENT CONNECTED");
@@ -94,15 +88,6 @@ namespace Meina
             {
                 while (true)
                 {
-                    System.Numerics.Vector2 vector = bot.GetPosition();
-                    float xPos = vector.X;
-                    float yPos = vector.Y;
-
-                    float deltaX = ((float)rand.NextDouble()) * 200;
-                    float newXPos = (rand.NextDouble() >= 0.5) ? xPos + deltaX : xPos - deltaX;
-
-                    bot.Teleport(newXPos, 5200);
-                    System.Threading.Thread.Sleep(rand.Next(1, 4000));
                     if (waitingForReceive == false)
                     {
                         Stopwatch.Reset();
@@ -147,7 +132,6 @@ namespace Meina
                 System.Threading.Thread.Sleep(rand.Next(1, 1000));
             }
         }
-    }
 
         private string generateRandomName()
         {
