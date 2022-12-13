@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Numerics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Xml.Xsl;
 using TerrariaBot;
 //using TerrariaBot;
 using TerrariaBot.Client;
@@ -16,20 +19,23 @@ namespace Meina
     public class BotRunner
     {
         // Configurable settings
-        readonly private int botCount = 100;
+        readonly private int botCount = 40;
         readonly private bool testLatency = true;
         readonly private string workload = "teleport";
         string logFile = Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory) + "\\output.csv";
-
         readonly int seed = 12345;
         private string ip = "localhost";
         private string password = "";
+
         private readonly AutoResetEvent autoEvent = new AutoResetEvent(false);
         private Random rand = new Random();
         private AClient Client;
         private Stopwatch Stopwatch = new Stopwatch();
         private bool waitingForReceive = false;
         long nanosecPerTick = (1000L * 1000L * 1000L) / Stopwatch.Frequency;
+        private System.Numerics.Vector2 spawnPos;
+
+        private int playerCount = 1;
         static void Main(string[] _)
         => new BotRunner();
 
@@ -44,12 +50,12 @@ namespace Meina
                 if (File.Exists(logFile)) File.Delete(logFile);
                 File.Create(logFile).Close();
                 TextWriter tw = new StreamWriter(logFile);
-                tw.WriteLine("PacketNumber,Latency,Botcount,Workload");
+                tw.WriteLine("Latency,Botcount,Workload");
                 tw.Close();
 
                 if (testLatency) botCount += 2;
 
-                for (int i = 0; i < botCount; ++i)
+                for (int i = 0; i < botCount; i++)
                 {
                     Client = new IPClient();
 
@@ -60,14 +66,17 @@ namespace Meina
 
                     var newChar = GenerateRandomChar(name);
                     Client.ServerJoined += BotJoined;
-                    Client.Log += Log;
+                    //Client.Log += Log;
 
-                    if (i == 0) Client.ChatMessageReceived += ReceiverChat;
+                    if (i == 0)
+                    {
+                        Client.PlayerPositionUpdate += ReceiverDetectMovement;
+                        Client.NewPlayerJoined += incrementPlayerCount;
+                    }
                     else Client.ChatMessageReceived += Chat;
                     
                     ((IPClient)Client).ConnectWithIP(ip, newChar, password);
                     Console.WriteLine("CLIENT CONNECTED");
-
                 }
 
             }
@@ -83,23 +92,29 @@ namespace Meina
 
         private byte[] HairList = new byte[] { 11, 0, 1 };
 
+        private void incrementPlayerCount(Player player)
+        {
+            playerCount++;
+        }
+
         private void BotJoined(PlayerSelf bot)
         {
 
             bot.TogglePVP(false);
             if (String.Equals(bot.GetName(), "Sender"))
             {
-                int packetNumber = 1;
+                spawnPos = bot.GetPosition();
                 while (true)
                 {
-                    if (waitingForReceive == false)
+                    if (!waitingForReceive)
                     {
                         Stopwatch.Reset();
                         Stopwatch.Start();
                         waitingForReceive = true;
-                        bot.SendChatMessage("Latency " + packetNumber.ToString());
-                        packetNumber++;
+                        if (bot.GetPosition().X <= spawnPos.X) bot.Teleport(spawnPos.X + 50, spawnPos.Y);
+                        else bot.Teleport(spawnPos.X - 50, spawnPos.Y);
                     }
+                    
                 }
             }
             else if (String.Equals(bot.GetName(), "Receiver"))
@@ -122,7 +137,6 @@ namespace Meina
 
         private void runTeleportWorkload(PlayerSelf bot)
         {
-
             while (true)
             {
                 System.Numerics.Vector2 vector = bot.GetPosition();
@@ -175,24 +189,21 @@ namespace Meina
             Console.ForegroundColor = color;
         }
 
-        private void ReceiverChat(Player author, string message)
+        private void ReceiverDetectMovement(Player bot, Vector2 position)
         {
-            if (String.Equals(author.GetName(), "Sender"))
+            if (String.Equals(bot.GetName(), "Sender") && bot.GetPosition().X > 5.0)
             {
                 Stopwatch.Stop();
-                int packetNumber = int.Parse(message.Split(' ')[1]);
                 //long millis = Stopwatch.ElapsedMilliseconds;
                 long nanos = Stopwatch.ElapsedTicks * nanosecPerTick;
                 int botCount = Client.GetAllPlayers().Length;
 
-                string logMessage = $"{packetNumber},{nanos},{botCount},{workload}";
+                string logMessage = $"{nanos},{botCount},{workload}";
 
                 TextWriter tw = new StreamWriter(logFile, true);
                 tw.WriteLine(logMessage);
                 tw.Close();
 
-                //Console.WriteLine("{0}Ms, {1}Ns", millis, nanos);
-                //Console.WriteLine(logMessage);
                 System.Threading.Thread.Sleep(20);
                 waitingForReceive = false;
             }
