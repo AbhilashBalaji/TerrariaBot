@@ -35,7 +35,9 @@ namespace Meina
         long nanosecPerTick = (1000L * 1000L * 1000L) / Stopwatch.Frequency;
         private System.Numerics.Vector2 spawnPos;
 
-        private int playerCount = 1;
+        private int playerCount = 0; // Excludes receiver, 1 if included
+        private int latencyProbesReceived = 0;
+        private PlayerSelf receiver;
         static void Main(string[] _)
         => new BotRunner();
 
@@ -57,6 +59,7 @@ namespace Meina
 
                 for (int i = 0; i < botCount; i++)
                 {
+                    System.Threading.Thread.Sleep(5000);
                     Client = new IPClient();
 
                     //Naming bots
@@ -119,7 +122,7 @@ namespace Meina
             }
             else if (String.Equals(bot.GetName(), "Receiver"))
             {
-                //avoid receiver doing workload actions
+                receiver = bot;
             }
             else
             {
@@ -193,12 +196,19 @@ namespace Meina
         {
             if (String.Equals(bot.GetName(), "Sender") && bot.GetPosition().X > 5.0)
             {
+
                 Stopwatch.Stop();
+                latencyProbesReceived++;
                 //long millis = Stopwatch.ElapsedMilliseconds;
                 long nanos = Stopwatch.ElapsedTicks * nanosecPerTick;
-                int botCount = Client.GetAllPlayers().Length;
 
-                string logMessage = $"{nanos},{botCount},{workload}";
+                string logMessage = $"{nanos},{playerCount},{workload}";
+
+                //Avoid disconnecting due to inactivity
+                if (latencyProbesReceived % 20 == 0)
+                {
+                    receiver.Teleport(spawnPos.X, spawnPos.Y);
+                }
 
                 TextWriter tw = new StreamWriter(logFile, true);
                 tw.WriteLine(logMessage);
