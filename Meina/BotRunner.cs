@@ -62,17 +62,49 @@ namespace Meina
 
         private void BotJoined(PlayerSelf bot)
         {
-            bot.SendChatMessage(bot.GetName() + " Joined");
-            // System.Numerics.Vector2 vector = new System.Numerics.Vector2(0, 0);
-            // System.Numerics.Vector2 velo = new System.Numerics.Vector2(0, 0);
 
-            // bot.SetPosition(vector, velo);
-            //random sleep before action
-            System.Threading.Thread.Sleep(rand.Next(1,40));
-            bot.JoinTeam(Team.Red);
+            var pos = bot.GetPosition();
+            bot.Teleport(pos.X, pos.Y - 50);
             bot.TogglePVP(false);
-            bot.SendChatMessage("STARTING RANDOM ACTION");
+            if (String.Equals(bot.GetName(), "Sender"))
+            {
+                spawnPos = bot.GetPosition();
+                while (true)
+                {
+                    if (!waitingForReceive)
+                    {
+                        Stopwatch.Reset();
+                        Stopwatch.Start();
+                        waitingForReceive = true;
+                        if (bot.GetPosition().X <= spawnPos.X) bot.Teleport(spawnPos.X + 50, spawnPos.Y);
+                        else bot.Teleport(spawnPos.X - 50, spawnPos.Y);
+                    }
+                    
+                }
+            }
+            else if (String.Equals(bot.GetName(), "Receiver"))
+            {
+                receiver = bot;
+            }
+            else
+            {
+                switch(workload)
+                {
+                    case "teleport":
+                        runTeleportWorkload(bot);
+                        break;
+                    case "walking":
+                        runWalkingWorkload(bot);
+                        break;
 
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid workload selected: ", workload);
+                };
+            }
+
+
+        private void runTeleportWorkload(PlayerSelf bot) { 
 
            while(true)
             {
@@ -86,7 +118,20 @@ namespace Meina
                 bot.Teleport(newXPos, 5200);
                 System.Threading.Thread.Sleep(rand.Next(1, 4000));
             }
+        }
+        private void runWalkingWorkload(PlayerSelf bot)
+        {
 
+            PlayerAction[] actions = { PlayerAction.Right, PlayerAction.Left };
+            int i = 0;
+            while (true)
+            {
+                i++;
+                var pos = bot.GetPosition();
+                bot.Teleport(pos.X, spawnPos.Y - 50);
+                bot.DoAction(new PlayerAction[] { actions[i % 2] });
+                System.Threading.Thread.Sleep(rand.Next(2000, 4000));
+            }
         }
 
         private void Log(LogLevel logLevel, string message)
