@@ -77,7 +77,7 @@ namespace Meina
                         Client.ServerJoined += BotJoined;
                         //Client.Log += Log;
 
-                        if (i == 0)
+                        if (i == 0 && testLatency)
                         {
                             Client.PlayerPositionUpdate += ReceiverDetectMovement;
                             Client.NewPlayerJoined += incrementPlayerCount;
