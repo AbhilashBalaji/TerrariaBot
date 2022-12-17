@@ -26,6 +26,9 @@ namespace Meina
         readonly int seed = 12345;
         private string ip = "localhost";
         private string password = "";
+        private int port = 7777;
+        private int batchJoinDelay = 5000;
+        private int batchSize = 5;
 
         private readonly AutoResetEvent autoEvent = new AutoResetEvent(false);
         private Random rand = new Random();
@@ -59,27 +62,32 @@ namespace Meina
 
                 for (int i = 0; i < botCount; i++)
                 {
-                    System.Threading.Thread.Sleep(5000);
-                    Client = new IPClient();
-
-                    //Naming bots
-                    var name = "";
-                    if (testLatency) name = i == 0 ? "Receiver" : (i == 1 ? "Sender" : generateRandomName());
-                    else name = generateRandomName();
-
-                    var newChar = GenerateRandomChar(name);
-                    Client.ServerJoined += BotJoined;
-                    //Client.Log += Log;
-
-                    if (i == 0)
+                    System.Threading.Thread.Sleep(batchJoinDelay);
+                    //batching
+                    for (int j = 0; j < batchSize; j++)
                     {
-                        Client.PlayerPositionUpdate += ReceiverDetectMovement;
-                        Client.NewPlayerJoined += incrementPlayerCount;
+                        Client = new IPClient();
+
+                        //Naming bots
+                        var name = "";
+                        if (testLatency) name = i == 0 ? "Receiver" : (i == 1 ? "Sender" : generateRandomName());
+                        else name = generateRandomName();
+
+                        var newChar = GenerateRandomChar(name);
+                        Client.ServerJoined += BotJoined;
+                        //Client.Log += Log;
+
+                        if (i == 0)
+                        {
+                            Client.PlayerPositionUpdate += ReceiverDetectMovement;
+                            Client.NewPlayerJoined += incrementPlayerCount;
+                        }
+                        else Client.ChatMessageReceived += Chat;
+
+                        ((IPClient)Client).ConnectWithIP(ip, newChar, password, port);
+                        Console.WriteLine("CLIENT CONNECTED");
+                        if (j < batchSize - 1) i++;
                     }
-                    else Client.ChatMessageReceived += Chat;
-                    
-                    ((IPClient)Client).ConnectWithIP(ip, newChar, password);
-                    Console.WriteLine("CLIENT CONNECTED");
                 }
 
             }
