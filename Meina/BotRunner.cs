@@ -136,8 +136,11 @@ namespace Meina
             {
                 switch(workload)
                 {
-                    case "teleport": 
+                    case "teleport":
                         runTeleportWorkload(bot);
+                        break;
+                    case "walking":
+                        runWalkingWorkload(bot);
                         break;
                     default:
                         throw new ArgumentException("Invalid workload selected: ", workload);
@@ -159,6 +162,20 @@ namespace Meina
 
                 bot.Teleport(newXPos, yPos);
                 System.Threading.Thread.Sleep(rand.Next(1, 1000));
+            }
+        }
+        private void runWalkingWorkload(PlayerSelf bot)
+        {
+
+            PlayerAction[] actions = { PlayerAction.Right, PlayerAction.Left };
+            int i = 0;
+            while (true)
+            {
+                i++;
+                var pos = bot.GetPosition();
+                bot.Teleport(pos.X, spawnPos.Y - 50);
+                bot.DoAction(new PlayerAction[] { actions[i % 2] });
+                System.Threading.Thread.Sleep(rand.Next(2000, 4000));
             }
         }
 
