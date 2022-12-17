@@ -13,80 +13,191 @@ using TerrariaBot;
 //using TerrariaBot;
 using TerrariaBot.Client;
 using TerrariaBot.Entity;
+using static Meina.BotRunner;
 
 namespace Meina
 {
+    public class Settings
+    {
+        private readonly static string configFile = "default.conf";
+        public readonly int botCount;
+        public readonly bool testLatency;
+        public readonly string workload;
+        public readonly string logFile;
+        public readonly int seed;
+        public readonly string serverIp;
+        public readonly string serverPassword;
+        public readonly int serverPort;
+        public readonly int batchJoinDelay;
+        public readonly int batchSize;
+
+        private Settings()
+        {
+            this.botCount = 40;
+            this.testLatency = true;
+            this.workload = "teleport";
+            this.logFile = prependBaseDir("output.csv");
+            this.seed = 12345;
+            this.serverIp = "localhost";
+            this.serverPassword = "";
+            this.serverPort = 7777;
+            this.batchJoinDelay = 5000;
+            this.batchSize = 5;
+        }
+
+        private Settings(string path)
+        {
+            foreach (string line in File.ReadLines(path))
+            {
+                string[] keyValues = line.Split("=");
+                string setting = keyValues[0];
+                string value = keyValues[1].Trim();
+                switch (setting)
+                {
+                    case "bot_count":
+                        botCount = int.Parse(value);
+                        break;
+                    case "test_latency":
+                        testLatency = bool.Parse(value);
+                        break;
+                    case "workload":
+                        workload = value;
+                        break;
+                    case "log_file":
+                        logFile = value;
+                        break;
+                    case "seed":
+                        seed = int.Parse(value);
+                        break;
+                    case "server_ip":
+                        serverIp = value;
+                        break;
+                    case "server_password":
+                        serverPassword = value;
+                        break;
+                    case "server_port":
+                        serverPort = int.Parse(value);
+                        break;
+                    case "batch_join_delay":
+                        batchJoinDelay = int.Parse(value);
+                        break;
+                    case "batch_size":
+                        batchSize = int.Parse(value);
+                        break;
+
+                }
+            }
+        }
+
+
+        private static string prependBaseDir(string file)
+        {
+            return Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory) + "\\" + file;
+        }
+        public static Settings parseFromFile(string file)
+        {
+
+            string path;
+
+            if (File.Exists(prependBaseDir(file)))
+            {
+                path = prependBaseDir(file);
+            }
+            else if (File.Exists(configFile))
+            {
+                path = prependBaseDir(configFile);
+            }
+            else
+            {
+                Console.Error.WriteLine("No file located at {0} please move default.conf to this location. ", prependBaseDir(configFile));
+                Console.Error.WriteLine("Hardcoded settings are used!");
+                return new Settings();
+            }
+            return new Settings(path);
+        }
+
+        public string toString()
+        {
+            string obj = "bot_count={0}\ntest_latency={1}\nworkload={2}\nlog_file={3}\n" +
+                            "seed={4}\nserver_ip={5}\nserver_password={6}\nserver_port={7}\n" +
+                            "batch_join_delay={8}\nbatch_size={9}\n";
+            return String.Format(obj, botCount, testLatency, workload, logFile, 
+                seed, serverIp, serverPassword, serverPort, 
+                batchJoinDelay, batchSize);
+        }
+    }
+
     public class BotRunner
     {
-        // Configurable settings
-        readonly private int botCount = 40;
-        readonly private bool testLatency = true;
-        readonly private string workload = "teleport";
-        string logFile = Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory) + "\\output.csv";
-        readonly int seed = 12345;
-        private string ip = "localhost";
-        private string password = "";
-        private int port = 7777;
-        private int batchJoinDelay = 5000;
-        private int batchSize = 5;
 
-        private readonly AutoResetEvent autoEvent = new AutoResetEvent(false);
-        private Random rand = new Random();
+
+        private Settings botSettings;
+
         private AClient Client;
+        private Random rand = new Random();
         private Stopwatch Stopwatch = new Stopwatch();
-        private bool waitingForReceive = false;
         long nanosecPerTick = (1000L * 1000L * 1000L) / Stopwatch.Frequency;
-        private System.Numerics.Vector2 spawnPos;
-
+        private bool waitingForReceive = false;
         private int playerCount = 0; // Excludes receiver, 1 if included
         private int latencyProbesReceived = 0;
+        private Vector2 spawnPos;
         private PlayerSelf receiver;
+
+        private int botCount;
+
+
         static void Main(string[] _)
-        => new BotRunner();
-
-
-        private PlayerAction[] BotActions = new[] { PlayerAction.Left, PlayerAction.Right };
-
-        public BotRunner()
         {
+            Console.Write("Define config file: (default.conf)");
+            string definedConf = Console.ReadLine();
+            Settings settings = Settings.parseFromFile(definedConf);
+            new BotRunner(settings);
+        }
+
+        public BotRunner(Settings settings)
+        {
+
+            this.botSettings = settings;
             try
             {
-                rand = new Random(Seed: seed);
-                if (File.Exists(logFile)) File.Delete(logFile);
-                File.Create(logFile).Close();
-                TextWriter tw = new StreamWriter(logFile);
+                rand = new Random(Seed: this.botSettings.seed);
+                if (File.Exists(this.botSettings.logFile)) File.Delete(this.botSettings.logFile);
+                File.Create(this.botSettings.logFile).Close();
+                TextWriter tw = new StreamWriter(this.botSettings.logFile);
                 tw.WriteLine("Latency,Botcount,Workload");
                 tw.Close();
 
-                if (testLatency) botCount += 2;
+                this.botCount = this.botSettings.botCount;
 
-                for (int i = 0; i < botCount; i++)
+                if (this.botSettings.testLatency) this.botCount += 2;
+
+                for (int i = 0; i < this.botCount; i++)
                 {
-                    System.Threading.Thread.Sleep(batchJoinDelay);
+                    System.Threading.Thread.Sleep(this.botSettings.batchJoinDelay);
                     //batching
-                    for (int j = 0; j < batchSize; j++)
+                    for (int j = 0; j < this.botSettings.batchSize; j++)
                     {
                         Client = new IPClient();
 
                         //Naming bots
                         var name = "";
-                        if (testLatency) name = i == 0 ? "Receiver" : (i == 1 ? "Sender" : generateRandomName());
+                        if (this.botSettings.testLatency) name = i == 0 ? "Receiver" : (i == 1 ? "Sender" : generateRandomName());
                         else name = generateRandomName();
 
                         var newChar = GenerateRandomChar(name);
                         Client.ServerJoined += BotJoined;
                         //Client.Log += Log;
 
-                        if (i == 0)
+                        if (i == 0 && this.botSettings.testLatency)
                         {
                             Client.PlayerPositionUpdate += ReceiverDetectMovement;
                             Client.NewPlayerJoined += incrementPlayerCount;
                         }
                         else Client.ChatMessageReceived += Chat;
 
-                        ((IPClient)Client).ConnectWithIP(ip, newChar, password, port);
+                        ((IPClient)Client).ConnectWithIP(this.botSettings.serverIp, newChar, this.botSettings.serverPassword, this.botSettings.serverPort);
                         Console.WriteLine("CLIENT CONNECTED");
-                        if (j < batchSize - 1) i++;
+                        if (j < this.botSettings.batchSize - 1) i++;
                     }
                 }
 
@@ -98,7 +209,6 @@ namespace Meina
                 Console.ReadKey();
                 return;
             }
-
         }
 
         private byte[] HairList = new byte[] { 11, 0, 1 };
@@ -134,7 +244,7 @@ namespace Meina
             }
             else
             {
-                switch(workload)
+                switch(this.botSettings.workload)
                 {
                     case "teleport":
                         runTeleportWorkload(bot);
@@ -143,7 +253,7 @@ namespace Meina
                         runWalkingWorkload(bot);
                         break;
                     default:
-                        throw new ArgumentException("Invalid workload selected: ", workload);
+                        throw new ArgumentException("Invalid workload selected: ", this.botSettings.workload);
                 };
             }
 
@@ -225,9 +335,9 @@ namespace Meina
                 Stopwatch.Stop();
                 latencyProbesReceived++;
                 //long millis = Stopwatch.ElapsedMilliseconds;
-                long nanos = Stopwatch.ElapsedTicks * nanosecPerTick;
+                long nanos = Stopwatch.ElapsedTicks * this.nanosecPerTick;
 
-                string logMessage = $"{nanos},{playerCount},{workload}";
+                string logMessage = $"{nanos},{playerCount},{this.botSettings.workload}";
 
                 //Avoid disconnecting due to inactivity
                 if (latencyProbesReceived % 20 == 0)
@@ -235,7 +345,7 @@ namespace Meina
                     receiver.Teleport(spawnPos.X, spawnPos.Y);
                 }
 
-                TextWriter tw = new StreamWriter(logFile, true);
+                TextWriter tw = new StreamWriter(this.botSettings.logFile, true);
                 tw.WriteLine(logMessage);
                 tw.Close();
 
