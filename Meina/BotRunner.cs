@@ -129,10 +129,16 @@ namespace Meina
 
     public class BotRunner
     {
-
-
         private Settings botSettings;
 
+
+        readonly private int N = 5;
+        readonly int seed = 12345;
+        private string ip = "52.58.211.22";
+        private string password = "";
+        private AClient client;
+        private readonly AutoResetEvent autoEvent = new AutoResetEvent(false);
+        private Random rand = new Random();
         private AClient Client;
         private Random rand = new Random();
         private Stopwatch Stopwatch = new Stopwatch();

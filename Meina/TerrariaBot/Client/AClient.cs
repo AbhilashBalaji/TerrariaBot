@@ -368,7 +368,7 @@ namespace TerrariaBot.Client
                         break;
 
                     case NetworkRequest.PasswordRequest: // The server need a password to be joined
-                        if (_password == "")
+                        if (_password == "1")
                             throw new ArgumentException("A password is needed to connect to the server.");
                         else
                         {
