@@ -1,0 +1,36 @@
+services:
+  server:
+    image: ryshe/terraria:1.3.5.3
+    container_name: server
+    ports:
+      - 7777:7777
+    volumes:
+      - ./server/world:/root/.local/share/Terraria/Worlds
+    command: -world /root/.local/share/Terraria/Worlds/2022DistSys.wld -maxplayers 10000 -connperip 5000
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - cadvisor
+    restart: unless-stopped
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.46.0
+    container_name: cadvisor
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    restart: unless-stopped
